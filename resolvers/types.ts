@@ -17,6 +17,13 @@ export type Country = {
   mostRecent?: Maybe<Result>;
 };
 
+export type State = {
+  __typename?: 'State';
+ name?: Maybe<Scalars['String']>;
+ results?: Maybe<Array<Maybe<Result>>>;
+ mostRecent?: Maybe<Result>;
+};
+
 export type DateInput = {
   eq?: Maybe<Scalars['String']>;
   gt?: Maybe<Scalars['String']>;
@@ -27,6 +34,9 @@ export type Query = {
    __typename?: 'Query';
   results?: Maybe<Array<Maybe<Result>>>;
   result?: Maybe<Result>;
+  summary?: Maybe<Summary>;
+  states?: Maybe<Array<Maybe<State>>>;
+  state?: Maybe<State>;
   countries?: Maybe<Array<Maybe<Country>>>;
   country?: Maybe<Country>;
 };
@@ -40,9 +50,29 @@ export type QueryResultsArgs = {
 
 export type QueryResultArgs = {
   country: Scalars['String'];
+  state?: Scalars['String'];
   date?: Maybe<Scalars['String']>;
 };
 
+export type QuerySummaryArgs = {
+
+};
+
+export type QuerySummaryDrillArgs = {
+  country?: Maybe<Scalars['String']>;
+  names?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type QueryStatesArgs = {
+  country: Maybe<Scalars['String']>;
+  names?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type QueryStateArgs = {
+  country: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
 
 export type QueryCountriesArgs = {
   names?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -55,6 +85,7 @@ export type QueryCountryArgs = {
 
 export type Result = {
    __typename?: 'Result';
+  state?: Maybe<State>;
   country?: Maybe<Country>;
   date?: Maybe<Scalars['String']>;
   confirmed?: Maybe<Scalars['Int']>;
@@ -64,10 +95,18 @@ export type Result = {
 };
 
 
+export type Summary = {
+  __typename?: 'Summary';
+ date?: Maybe<Scalars['String']>;
+ confirmed?: Maybe<Scalars['Int']>;
+ deaths?: Maybe<Scalars['Int']>;
+ recovered?: Maybe<Scalars['Int']>;
+};
+
+
 export type ResultDateArgs = {
   format?: Maybe<Scalars['String']>;
 };
-
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -144,6 +183,8 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>,
   String: ResolverTypeWrapper<Scalars['String']>,
   DateInput: DateInput,
+  Summary: ResolverTypeWrapper<Summary>,
+  State: ResolverTypeWrapper<State>,
   Result: ResolverTypeWrapper<Result>,
   Country: ResolverTypeWrapper<Country>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
@@ -157,6 +198,8 @@ export type ResolversParentTypes = {
   String: Scalars['String'],
   DateInput: DateInput,
   Result: Result,
+  Summary: Summary,
+  State: State,
   Country: Country,
   Int: Scalars['Int'],
   Float: Scalars['Float'],
@@ -170,15 +213,27 @@ export type CountryResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
+export type StateResolvers<ContextType = any, ParentType extends ResolversParentTypes['State'] = ResolversParentTypes['State']> = {
+  country?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  results?: Resolver<Maybe<Array<Maybe<ResolversTypes['Result']>>>, ParentType, ContextType>,
+  mostRecent?: Resolver<Maybe<ResolversTypes['Result']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   results?: Resolver<Maybe<Array<Maybe<ResolversTypes['Result']>>>, ParentType, ContextType, RequireFields<QueryResultsArgs, never>>,
   result?: Resolver<Maybe<ResolversTypes['Result']>, ParentType, ContextType, RequireFields<QueryResultArgs, 'country'>>,
+  summary?: Resolver<Maybe<ResolversTypes['Summary']>, ParentType, ContextType, RequireFields<QuerySummaryArgs, never>>,
   countries?: Resolver<Maybe<Array<Maybe<ResolversTypes['Country']>>>, ParentType, ContextType, RequireFields<QueryCountriesArgs, never>>,
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType, RequireFields<QueryCountryArgs, never>>,
+  states?: Resolver<Maybe<Array<Maybe<ResolversTypes['State']>>>, ParentType, ContextType, RequireFields<QueryStatesArgs, never>>,
+  state?: Resolver<Maybe<ResolversTypes['State']>, ParentType, ContextType, RequireFields<QueryStateArgs, never>>,
 };
 
 export type ResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = {
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>,
+  state?: Resolver<Maybe<ResolversTypes['State']>, ParentType, ContextType>,
   date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<ResultDateArgs, never>>,
   confirmed?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
   deaths?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
@@ -187,10 +242,20 @@ export type ResultResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
+export type SummaryResolver<ContextType = any, ParentType extends ResolversParentTypes['Summary'] = ResolversParentTypes['Summary']> = {
+  date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<ResultDateArgs, never>>,
+  confirmed?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
+  deaths?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
+  recovered?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
 export type Resolvers<ContextType = any> = {
   Country?: CountryResolvers<ContextType>,
+  State?: StateResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Result?: ResultResolvers<ContextType>,
+  Summary?: SummaryResolver<ContextType>,
 };
 
 

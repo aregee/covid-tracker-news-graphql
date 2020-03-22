@@ -15,7 +15,33 @@ const getGrowthRate = (index: number, results: any) => {
   return (currentResult.confirmed - prevResult.confirmed) / prevResult.confirmed
 }
 
+let mapModel = (data) => {
+  return {
+    date: data.updated_date,
+    confirmed: data.cases_confirmed,
+    deaths:  data.cases_death,
+    recovered: data.cases_recovered,
+    countries: data.countries
+  }
+}
+
+const mapState = (model) => {
+  return {
+    date: formatDate(new Date(model.updated)),
+    confirmed: model.cases_confirmed,
+    deaths: model.cases_death,
+    recovered: model.cases_recovered,
+    country: model.country,
+    name: model.state
+  }
+};
 const resolvers: QueryResolvers = {
+
+  async summary(_parent, {}, {getNdtvResults}) {
+    const results = await getNdtvResults();
+    return mapModel(results);
+  },
+
   async results(_parent, { countries, date }, { getResults }) {
     const results = await getResults()
     const eq = date && date.eq ? formatDate(new Date(date.eq)) : null
@@ -72,9 +98,9 @@ const resolvers: QueryResolvers = {
         const mostRecentIndex = countryResults.length - 1
         const mostRecent = countryResults[mostRecentIndex]
         mostRecent.growthRate = getGrowthRate(mostRecentIndex, updatedResults)
-        const country = { name: countryName, results: updatedResults, mostRecent }
+        const country = { name: countryName, results: updatedResults, mostRecent}
         return [...acc, country]
-      }, [])
+      }, []);
     return formatted
   },
   async country(_parent, { name }, { getResults }) {
@@ -89,6 +115,25 @@ const resolvers: QueryResolvers = {
     }))
     const country = { name, results, mostRecent: results[results.length - 1] }
     return country
+  },
+
+  async states(_parent, {country, names}, {getNdtvResults}) {
+    const data = await getNdtvResults();
+    let selectedCountry = data.countries.find(arr => arr.country === country);
+    console.log(names, selectedCountry.states.map(c => c.state));
+    let formatted = (names && names.length > 0 ? names : selectedCountry.states.map(c => c.state))
+      .reduce((acc, stateName) => {
+        const stateResults = selectedCountry.states.find(arr => arr.state === stateName);
+        // console.log(stateResults);
+        if (!stateResults) {
+          throw new ApolloError(`Couldn't find data from state ${stateResults}`)
+        }
+        const mostRecent = mapState(stateResults);
+        // const mostRecentIndex = stateResults.length - 1
+        const state = { name: stateName, mostRecent}
+        return [...acc, state]
+      }, []);
+    return formatted;
   }
 
 }

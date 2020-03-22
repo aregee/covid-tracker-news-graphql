@@ -11,6 +11,7 @@ const schema = makeExecutableSchema({
 })
 
 let results = null
+let ndtvResults = null
 
 const server = new ApolloServer({
   schema,
@@ -25,8 +26,19 @@ const server = new ApolloServer({
       results = await res.json()
       return results
     }
+
+    const getNdtvResults = async () => {
+      if (ndtvResults) {
+        return ndtvResults
+      }
+      const res = await fetch('https://edata.ndtv.com/cricket/coronavirus/data.json')
+      ndtvResults = await res.json()
+      return ndtvResults;
+    }
+    
     return {
-      getResults
+      getResults,
+      getNdtvResults
     }
   },
 
