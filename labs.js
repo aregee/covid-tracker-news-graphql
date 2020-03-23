@@ -1,4 +1,4 @@
-[
+module.exports = [
   {
     "state": "Andhra Pradesh",
     "site": "Sri Venkateswara Institute of Medical Sciences, Tirupati",
