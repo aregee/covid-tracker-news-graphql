@@ -3,13 +3,13 @@ import { default as typeDefs } from './schema'
 import resolvers from './resolvers'
 import fetch from 'node-fetch'
 import microCors = require('micro-cors');
-import linksList = require('./links');
-import labsList = require('./labs');
-import helplinesList = require('./helplines');
-// import fs = require('fs');
-// import util = require('util');
+// import linksList = require('./links');
+// import labsList = require('./labs');
+// import helplinesList = require('./helplines');
+import fs = require('fs');
+import util = require('util');
 
-// const readFile = util.promisify(fs.readFile);
+const readFile = util.promisify(fs.readFile);
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -23,15 +23,16 @@ let helplines = null;
 let labs = null;
 
 let fetchReferedLinks = () => {
-  return Promise.resolve(linksList)
+  return readFile('./links.json',  "utf8")
 }
 
 let fetchHelpLines = () => {
-  return Promise.resolve(helplinesList)
+  return readFile('./helplines.json',  "utf8")
+
 }
 
 let fetchLabs = () => {
-  return Promise.resolve(labsList)
+  return readFile('./labs.json',  "utf8")
 }
 
 const server = new ApolloServer({
