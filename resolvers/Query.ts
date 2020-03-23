@@ -15,6 +15,10 @@ const getGrowthRate = (index: number, results: any) => {
   return (currentResult.confirmed - prevResult.confirmed) / prevResult.confirmed
 }
 
+const getGrowthRateNdtv = (result: any) => {
+  return(result.confirmed - result.confirmedYday) / result.confirmedYday
+}
+
 let mapModel = (data) => {
   return {
     date: data.updated_date,
@@ -31,15 +35,75 @@ const mapState = (model) => {
     confirmed: model.cases_confirmed,
     deaths: model.cases_death,
     recovered: model.cases_recovered,
+    confirmedYday: model.cases_confirmed_yday,
+    deathYday: model.cases_death_yday,
+    recoveredYday: model.cases_recovered_yday,
     country: model.country,
     name: model.state
   }
 };
+
+const groupBy = function (arr, criteria) {
+  return arr.reduce(function (obj, item) {
+
+      // Check if the criteria is a function to run on the item or a property of it
+      var key = typeof criteria === 'function' ? criteria(item) : item[criteria];
+
+      // If the key doesn't exist yet, create it
+      if (!obj.hasOwnProperty(key)) {
+          obj[key] = [];
+      }
+
+      // Push the value to the object
+      obj[key].push(item);
+
+      // Return the object to the next item in the loop
+      return obj;
+
+  }, {});
+};
+
 const resolvers: QueryResolvers = {
 
   async summary(_parent, {}, {getNdtvResults}) {
     const results = await getNdtvResults();
     return mapModel(results);
+  },
+
+  async referedlink(_parent, { country, state, date }, { getReferedLinks }) {
+    const results = await getReferedLinks();
+    if(state) {
+      const aggs = groupBy(results, (s: any) => s.state === state);
+      if (aggs.true) {
+        return aggs.true;
+      }
+      return results;
+    }
+    return results;
+  },
+
+  async helpline(_parent, { country, state, date }, { getHelpLines }) {
+    const results = await getHelpLines();
+    if(state) {
+      const aggs = groupBy(results, (s: any) => s.state === state);
+      if (aggs.true) {
+        return aggs.true;
+      }
+      return results;
+    }
+    return results;
+  },
+
+  async labs(_parent, { country, state, date }, { getLabs }) {
+    const results = await getLabs();
+    if(state) {
+      const aggs = groupBy(results, (s: any) => s.state === state);
+      if (aggs.true) {
+        return aggs.true;
+      }
+      return results;
+    }
+    return results;
   },
 
   async results(_parent, { countries, date }, { getResults }) {
@@ -103,6 +167,7 @@ const resolvers: QueryResolvers = {
       }, []);
     return formatted
   },
+  
   async country(_parent, { name }, { getResults }) {
     const data = await getResults()
     let results = data[name]
@@ -129,11 +194,26 @@ const resolvers: QueryResolvers = {
           throw new ApolloError(`Couldn't find data from state ${stateResults}`)
         }
         const mostRecent = mapState(stateResults);
+        console.log(stateResults)
         // const mostRecentIndex = stateResults.length - 1
-        const state = { name: stateName, mostRecent}
+        console.log(getGrowthRateNdtv(mostRecent))  
+        const state = { name: stateName, mostRecent: {...mostRecent, growthRate: getGrowthRateNdtv(mostRecent)}}
         return [...acc, state]
       }, []);
     return formatted;
+  },
+
+  async state(_parent, {country, name}, {getNdtvResults}) {
+    const data = await getNdtvResults();
+    let selectedCountry = data.countries.find(arr => arr.country === country);
+    const stateResults = selectedCountry.states.find(arr => arr.state === name);
+    if (!stateResults) {
+      throw new ApolloError(`Couldn't find data from state ${stateResults}`)
+    }
+    const mostRecent = mapState(stateResults);
+    console.log(getGrowthRateNdtv(mostRecent))
+    const state = { name: name, mostRecent: {...mostRecent, growthRate: getGrowthRateNdtv(mostRecent)}}
+    return state;
   }
 
 }

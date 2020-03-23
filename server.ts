@@ -3,7 +3,10 @@ import { default as typeDefs } from './schema'
 import resolvers from './resolvers'
 import fetch from 'node-fetch'
 import microCors = require('micro-cors');
+import fs = require('fs');
+import util = require('util');
 
+const readFile = util.promisify(fs.readFile);
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -12,6 +15,21 @@ const schema = makeExecutableSchema({
 
 let results = null
 let ndtvResults = null
+let referedLinks = null
+let helplines = null;
+let labs = null;
+
+let fetchReferedLinks = () => {
+  return readFile('./links.json',  "utf8")
+}
+
+let fetchHelpLines = () => {
+  return readFile('./helplines.json',  "utf8")
+}
+
+let fetchLabs = () => {
+  return readFile('./labs.json',  "utf8")
+}
 
 const server = new ApolloServer({
   schema,
@@ -33,12 +51,43 @@ const server = new ApolloServer({
       }
       const res = await fetch('https://edata.ndtv.com/cricket/coronavirus/data.json')
       ndtvResults = await res.json()
-      return ndtvResults;
+      return ndtvResults
+    }
+
+    const getReferedLinks = async () => {
+      if(referedLinks) {
+        return referedLinks
+      }
+      const res = await fetchReferedLinks()
+      referedLinks = JSON.parse(res)
+      return referedLinks
+    }
+
+    const getHelpLines = async () => {
+      if(helplines) {
+        return helplines
+      }
+      const res = await fetchHelpLines()
+
+      helplines = JSON.parse(res)
+      return helplines
+    }
+
+    const getLabs = async () => {
+      if(labs) {
+        return labs
+      }
+      const res = await fetchLabs()
+      labs = JSON.parse(res)
+      return labs
     }
     
     return {
       getResults,
-      getNdtvResults
+      getNdtvResults,
+      getReferedLinks,
+      getHelpLines,
+      getLabs,
     }
   },
 

@@ -34,6 +34,33 @@ type Summary {
   recovered: Int
 }
 
+type ReferedLink {
+  source: String
+  link: String
+  country: String
+}
+
+type TestSite {
+  country: String
+  state: String
+  site: String
+}
+
+type HelplineNumber {
+  country: Country
+  state: String
+  number: String
+}
+
+type NewsArticle {
+   country: Country
+   state: State
+   short: String
+   headline: String
+   date (format: String): String
+   link: String
+   tags: [String]
+}
 """eq - equal to, gt - greater than, lt - less than"""
 input DateInput {
   eq: String
@@ -52,6 +79,12 @@ type Query {
 
   states (country: String!, names: [String]): [State]
   state (country: String!, name: String): State
+
+  referedlink (country: String!, state: String): [ReferedLink]
+
+  helpline (country: String!, state: String): [HelplineNumber]
+
+  labs (country: String!, state: String): [TestSite]
 }
 `
 
