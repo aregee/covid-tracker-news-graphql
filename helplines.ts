@@ -1,4 +1,4 @@
-[
+export const helplinesList = [
   {
     "state": "Andhra Pradesh",
     "number": "0866-2410978",

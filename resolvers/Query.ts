@@ -70,7 +70,7 @@ const resolvers: QueryResolvers = {
     return mapModel(results);
   },
 
-  async referedlink(_parent, { country, state, date }, { getReferedLinks }) {
+  async referedlink(_parent, { country, state }, { getReferedLinks }) {
     const results = await getReferedLinks();
     if(state) {
       const aggs = groupBy(results, (s: any) => s.state === state);
@@ -82,7 +82,7 @@ const resolvers: QueryResolvers = {
     return results;
   },
 
-  async helpline(_parent, { country, state, date }, { getHelpLines }) {
+  async helpline(_parent, { country, state }, { getHelpLines }) {
     const results = await getHelpLines();
     if(state) {
       const aggs = groupBy(results, (s: any) => s.state === state);
@@ -94,7 +94,7 @@ const resolvers: QueryResolvers = {
     return results;
   },
 
-  async labs(_parent, { country, state, date }, { getLabs }) {
+  async labs(_parent, { country, state }, { getLabs }) {
     const results = await getLabs();
     if(state) {
       const aggs = groupBy(results, (s: any) => s.state === state);
@@ -167,7 +167,7 @@ const resolvers: QueryResolvers = {
       }, []);
     return formatted
   },
-  
+
   async country(_parent, { name }, { getResults }) {
     const data = await getResults()
     let results = data[name]
