@@ -43,6 +43,20 @@ const mapState = (model) => {
   }
 };
 
+const mapCountry = (model) => {
+  return {
+    date: formatDate(new Date(model.updated)),
+    confirmed: model.cases_confirmed,
+    deaths: model.cases_death,
+    recovered: model.cases_recovered,
+    confirmedYday: model.cases_confirmed_yday,
+    deathYday: model.cases_death_yday,
+    recoveredYday: model.cases_recovered_yday,
+    name: model.country,
+    states: model.states
+  }
+};
+
 const groupBy = function (arr, criteria) {
   return arr.reduce(function (obj, item) {
 
@@ -167,16 +181,24 @@ const resolvers: QueryResolvers = {
       }, []);
     return formatted
   },
+  
+  async country(_parent, { name }, { getResults, getNdtvResults }) {
+    let data: any;
+    let results: any;
+    if(name === "India") {
+      data = await getNdtvResults()
+      results = [data.countries.find((c:any) => c.country == name)].map(mapCountry)
+    } else {
+      data = await getResults()
+      results = data[name]
+    }
 
-  async country(_parent, { name }, { getResults }) {
-    const data = await getResults()
-    let results = data[name]
     if (!results) {
       throw new ApolloError(`Couldn't find data from country ${name}`)
     }
     results = results.map((result, index) => ({
       ...result,
-      growthRate: getGrowthRate(index, results)
+      growthRate: name === "India" ? getGrowthRateNdtv(result) : getGrowthRate(index, results)
     }))
     const country = { name, results, mostRecent: results[results.length - 1] }
     return country
