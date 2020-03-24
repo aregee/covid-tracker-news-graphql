@@ -53,14 +53,15 @@ type HelplineNumber {
 }
 
 type NewsArticle {
-   country: Country
-   state: State
+   country: String
+   state: String
    short: String
    headline: String
    date (format: String): String
    link: String
    tags: [String]
 }
+
 """eq - equal to, gt - greater than, lt - less than"""
 input DateInput {
   eq: String
@@ -79,6 +80,8 @@ type Query {
 
   states (country: String!, names: [String]): [State]
   state (country: String!, name: String): State
+
+  news (country: String!, format: String): [NewsArticle]
 
   referedlink (country: String!, state: String): [ReferedLink]
 

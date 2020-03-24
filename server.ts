@@ -8,8 +8,11 @@ import {labsList} from './labs'
 import {helplinesList} from './helplines'
 // import fs = require('fs');
 // import util = require('util');
+// APIKey 31923f57da3c436a823d033cc3e250ac
 
 // const readFile = util.promisify(fs.readFile);
+
+const newsApiToken = '31923f57da3c436a823d033cc3e250ac';
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -47,6 +50,24 @@ const server = new ApolloServer({
       const res = await fetch('https://pomber.github.io/covid19/timeseries.json')
       results = await res.json()
       return results
+    }
+
+    const getNewsWorld = async () => {
+      if (results) {
+        return results
+      }
+      const res = await fetch(`http://newsapi.org/v2/top-headlines?source=google-news&q=coronavirus&language=en&apiKey=${newsApiToken}`)
+      results = await res.json()
+      return results.articles
+    }
+
+    const getNewsIndia = async () => {
+      if (results) {
+        return results
+      }
+      const res = await fetch(`http://newsapi.org/v2/top-headlines?country=IN&q=coronavirus&apiKey=${newsApiToken}`)
+      results = await res.json()
+      return results.articles
     }
 
     const getNdtvResults = async () => {
@@ -92,6 +113,8 @@ const server = new ApolloServer({
       getReferedLinks,
       getHelpLines,
       getLabs,
+      getNewsWorld,
+      getNewsIndia,
     }
   },
 
