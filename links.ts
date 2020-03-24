@@ -1,4 +1,4 @@
-[
+export const linksList = [
   {
     "source": "Ministry of Health and Family Welfare Government of India",
     "link": "https://www.mohfw.gov.in/",

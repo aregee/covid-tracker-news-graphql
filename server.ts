@@ -3,13 +3,13 @@ import { default as typeDefs } from './schema'
 import resolvers from './resolvers'
 import fetch from 'node-fetch'
 import microCors = require('micro-cors');
-// import linksList = require('./links');
-// import labsList = require('./labs');
-// import helplinesList = require('./helplines');
-import fs = require('fs');
-import util = require('util');
+import {linksList} from './links'
+import {labsList} from './labs'
+import {helplinesList} from './helplines'
+// import fs = require('fs');
+// import util = require('util');
 
-const readFile = util.promisify(fs.readFile);
+// const readFile = util.promisify(fs.readFile);
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -23,16 +23,16 @@ let helplines = null;
 let labs = null;
 
 let fetchReferedLinks = () => {
-  return readFile('./links.json',  "utf8")
+  return Promise.resolve(linksList)
 }
 
 let fetchHelpLines = () => {
-  return readFile('./helplines.json',  "utf8")
+  return Promise.resolve(helplinesList)
 
 }
 
 let fetchLabs = () => {
-  return readFile('./labs.json',  "utf8")
+  return Promise.resolve(labsList)
 }
 
 const server = new ApolloServer({
@@ -63,7 +63,7 @@ const server = new ApolloServer({
         return referedLinks
       }
       const res = await fetchReferedLinks()
-      referedLinks = JSON.parse(res)
+      referedLinks = (res)
       return referedLinks
     }
 
@@ -73,7 +73,7 @@ const server = new ApolloServer({
       }
       const res = await fetchHelpLines()
 
-      helplines = JSON.parse(res)
+      helplines = (res)
       return helplines
     }
 
@@ -82,7 +82,7 @@ const server = new ApolloServer({
         return labs
       }
       const res = await fetchLabs()
-      labs = JSON.parse(res)
+      labs = (res)
       return labs
     }
     
