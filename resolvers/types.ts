@@ -32,8 +32,8 @@ export type HelplineNumber = {
 
 export type NewsArticle = {
    __typename?: 'NewsArticle';
-  country?: Maybe<Country>;
-  state?: Maybe<State>;
+  country?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   short?: Maybe<Scalars['String']>;
   headline?: Maybe<Scalars['String']>;
   date?: Maybe<Scalars['String']>;
@@ -55,6 +55,7 @@ export type Query = {
   country?: Maybe<Country>;
   states?: Maybe<Array<Maybe<State>>>;
   state?: Maybe<State>;
+  news?: Maybe<Array<Maybe<NewsArticle>>>;
   referedlink?: Maybe<Array<Maybe<ReferedLink>>>;
   helpline?: Maybe<Array<Maybe<HelplineNumber>>>;
   labs?: Maybe<Array<Maybe<TestSite>>>;
@@ -98,6 +99,12 @@ export type QueryStatesArgs = {
 export type QueryStateArgs = {
   country: Scalars['String'];
   name?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryNewsArgs = {
+  country: Scalars['String'];
+  format?: Maybe<Scalars['String']>;
 };
 
 
@@ -250,11 +257,11 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Float: ResolverTypeWrapper<Scalars['Float']>,
   Summary: ResolverTypeWrapper<Summary>,
+  NewsArticle: ResolverTypeWrapper<NewsArticle>,
   ReferedLink: ResolverTypeWrapper<ReferedLink>,
   HelplineNumber: ResolverTypeWrapper<HelplineNumber>,
   TestSite: ResolverTypeWrapper<TestSite>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
-  NewsArticle: ResolverTypeWrapper<NewsArticle>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -268,11 +275,11 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'],
   Float: Scalars['Float'],
   Summary: Summary,
+  NewsArticle: NewsArticle,
   ReferedLink: ReferedLink,
   HelplineNumber: HelplineNumber,
   TestSite: TestSite,
   Boolean: Scalars['Boolean'],
-  NewsArticle: NewsArticle,
 };
 
 export type CountryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Country'] = ResolversParentTypes['Country']> = {
@@ -290,11 +297,11 @@ export type HelplineNumberResolvers<ContextType = any, ParentType extends Resolv
 };
 
 export type NewsArticleResolvers<ContextType = any, ParentType extends ResolversParentTypes['NewsArticle'] = ResolversParentTypes['NewsArticle']> = {
-  country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>,
-  state?: Resolver<Maybe<ResolversTypes['State']>, ParentType, ContextType>,
+  country?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  state?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   short?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   headline?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<NewsArticleDateArgs, never>>,
+  date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   link?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
@@ -308,6 +315,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType, RequireFields<QueryCountryArgs, never>>,
   states?: Resolver<Maybe<Array<Maybe<ResolversTypes['State']>>>, ParentType, ContextType, RequireFields<QueryStatesArgs, 'country'>>,
   state?: Resolver<Maybe<ResolversTypes['State']>, ParentType, ContextType, RequireFields<QueryStateArgs, 'country'>>,
+  news?: Resolver<Maybe<Array<Maybe<ResolversTypes['NewsArticle']>>>, ParentType, ContextType, RequireFields<QueryNewsArgs, never>>,
   referedlink?: Resolver<Maybe<Array<Maybe<ResolversTypes['ReferedLink']>>>, ParentType, ContextType, RequireFields<QueryReferedlinkArgs, 'country'>>,
   helpline?: Resolver<Maybe<Array<Maybe<ResolversTypes['HelplineNumber']>>>, ParentType, ContextType, RequireFields<QueryHelplineArgs, 'country'>>,
   labs?: Resolver<Maybe<Array<Maybe<ResolversTypes['TestSite']>>>, ParentType, ContextType, RequireFields<QueryLabsArgs, 'country'>>,

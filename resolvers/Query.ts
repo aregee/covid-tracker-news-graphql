@@ -57,6 +57,16 @@ const mapCountry = (model) => {
   }
 };
 
+const mapNewsArticle = (model) => {
+  return {
+    short: model.description,
+    headline: model.title,
+    date: model.publishedAt,
+    link: model.url
+  }
+}
+
+
 const groupBy = function (arr, criteria) {
   return arr.reduce(function (obj, item) {
 
@@ -82,6 +92,18 @@ const resolvers: QueryResolvers = {
   async summary(_parent, {}, {getNdtvResults}) {
     const results = await getNdtvResults();
     return mapModel(results);
+  },
+
+
+  async news(_parent, {country, format}, {getNewsIndia, getNewsWorld}) {
+    let results; 
+    if(country === "India") {
+      results = await getNewsIndia();
+    } else {
+      results = await getNewsWorld();
+    }
+    console.log(results.articles)
+    return results.articles.map(mapNewsArticle)
   },
 
   async referedlink(_parent, { country, state }, { getReferedLinks }) {
