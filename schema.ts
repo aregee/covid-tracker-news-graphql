@@ -56,6 +56,7 @@ type NewsArticle {
    country: String
    state: String
    short: String
+   urlToImage: String
    headline: String
    date (format: String): String
    link: String

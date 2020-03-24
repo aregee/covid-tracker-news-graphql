@@ -3,6 +3,14 @@ import { ApolloError } from 'apollo-server-micro'
 
 const formatDate = (d: Date) => `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`
 
+function titleCase(string) {
+  var sentence = string.toLowerCase().split(" ");
+  for(var i = 0; i< sentence.length; i++){
+     sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+  }
+return sentence;
+}
+
 const getGrowthRate = (index: number, results: any) => {
   if (index === 0) {
     return 0
@@ -21,7 +29,7 @@ const getGrowthRateNdtv = (result: any) => {
 
 let mapModel = (data) => {
   return {
-    date: data.updated_date,
+    date: formatDate(new Date(data.updated_date)),
     confirmed: data.cases_confirmed,
     deaths:  data.cases_death,
     recovered: data.cases_recovered,
@@ -61,8 +69,9 @@ const mapNewsArticle = (model) => {
   return {
     short: model.description,
     headline: model.title,
-    date: model.publishedAt,
-    link: model.url
+    date: formatDate(new Date(model.publishedAt)),
+    link: model.url,
+    ...model
   }
 }
 
@@ -97,13 +106,17 @@ const resolvers: QueryResolvers = {
 
   async news(_parent, {country, format}, {getNewsIndia, getNewsWorld}) {
     let results; 
-    if(country === "India") {
-      results = await getNewsIndia();
+    if(country && titleCase(country)  !== "World") {
+      results = await getNewsIndia(titleCase(country));
     } else {
       results = await getNewsWorld();
     }
-    console.log(results.articles)
-    return results.articles.map(mapNewsArticle)
+    if(results.articles) {
+      return results.articles.map(mapNewsArticle)
+    } else {
+      throw new ApolloError(`Couldn't find data news from country ${country}`)
+    }
+
   },
 
   async referedlink(_parent, { country, state }, { getReferedLinks }) {
@@ -229,7 +242,7 @@ const resolvers: QueryResolvers = {
   async states(_parent, {country, names}, {getNdtvResults}) {
     const data = await getNdtvResults();
     let selectedCountry = data.countries.find(arr => arr.country === country);
-    console.log(names, selectedCountry.states.map(c => c.state));
+    // console.log(names, selectedCountry.states.map(c => c.state));
     let formatted = (names && names.length > 0 ? names : selectedCountry.states.map(c => c.state))
       .reduce((acc, stateName) => {
         const stateResults = selectedCountry.states.find(arr => arr.state === stateName);
@@ -238,9 +251,6 @@ const resolvers: QueryResolvers = {
           throw new ApolloError(`Couldn't find data from state ${stateResults}`)
         }
         const mostRecent = mapState(stateResults);
-        console.log(stateResults)
-        // const mostRecentIndex = stateResults.length - 1
-        console.log(getGrowthRateNdtv(mostRecent))  
         const state = { name: stateName, mostRecent: {...mostRecent, growthRate: getGrowthRateNdtv(mostRecent)}}
         return [...acc, state]
       }, []);
@@ -255,7 +265,6 @@ const resolvers: QueryResolvers = {
       throw new ApolloError(`Couldn't find data from state ${stateResults}`)
     }
     const mostRecent = mapState(stateResults);
-    console.log(getGrowthRateNdtv(mostRecent))
     const state = { name: name, mostRecent: {...mostRecent, growthRate: getGrowthRateNdtv(mostRecent)}}
     return state;
   }

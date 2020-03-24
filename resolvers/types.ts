@@ -37,6 +37,7 @@ export type NewsArticle = {
   short?: Maybe<Scalars['String']>;
   headline?: Maybe<Scalars['String']>;
   date?: Maybe<Scalars['String']>;
+  urlToImage?: Maybe<Scalars['String']>;
   link?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
@@ -303,6 +304,7 @@ export type NewsArticleResolvers<ContextType = any, ParentType extends Resolvers
   headline?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   link?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  urlToImage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
