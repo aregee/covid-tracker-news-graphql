@@ -25,7 +25,7 @@ let referedLinks = null
 let helplines = null;
 let labs = null;
 let worldNews = null;
-let indiaNews = null;
+let countryNews = {};
 
 let fetchReferedLinks = () => {
   return Promise.resolve(linksList)
@@ -63,13 +63,14 @@ const server = new ApolloServer({
       return worldNews
     }
 
-    const getNewsIndia = async (isoCode) => {
-      if (indiaNews) {
-        return indiaNews
-      }
-      const res = await fetch(`http://newsapi.org/v2/top-headlines?country=${isoCode}&q=coronavirus&apiKey=${newsApiToken}`)
-      indiaNews = await res.json()
-      return indiaNews
+    const getNewsIndia = async (isoCode: String) => {
+      // if (countryNews[isoCode]) {
+      //   return countryNews[isoCode]
+      // }
+      console.log(isoCode)
+      const res = await fetch(`http://newsapi.org/v2/top-headlines?country=${isoCode.toLowerCase()}&q=coronavirus&apiKey=${newsApiToken}`)
+      // countryNews[isoCode] = 
+      return await res.json()
     }
 
     const getNdtvResults = async () => {

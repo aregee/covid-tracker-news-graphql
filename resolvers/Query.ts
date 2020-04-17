@@ -1,5 +1,6 @@
 import { QueryResolvers } from './types'
 import { ApolloError } from 'apollo-server-micro'
+import {getCountryCode} from './utils'
 
 const formatDate = (d: Date) => `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`
 
@@ -105,9 +106,14 @@ const resolvers: QueryResolvers = {
 
 
   async news(_parent, {country, format}, {getNewsIndia, getNewsWorld}) {
-    let results; 
-    if(country && titleCase(country)  !== "World") {
-      results = await getNewsIndia(titleCase(country));
+    let results;
+    console.log(country);
+    console.log(titleCase(country))
+    console.log(getCountryCode(titleCase(country)))
+    let isoCode = country !== "" ? getCountryCode(titleCase(country)) : "World";
+    console.log(isoCode)
+    if(isoCode && isoCode !== "World") {
+      results = await getNewsIndia(isoCode);
     } else {
       results = await getNewsWorld();
     }
@@ -116,7 +122,6 @@ const resolvers: QueryResolvers = {
     } else {
       throw new ApolloError(`Couldn't find data news from country ${country}`)
     }
-
   },
 
   async referedlink(_parent, { country, state }, { getReferedLinks }) {
