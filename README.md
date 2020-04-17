@@ -35,6 +35,12 @@ query {
 ```
 
 
+## Run Locally
+
+```bash
+  npx micro local.js
+```
+
 ## Projects using this API
 
 [Add yours +](https://github.com/aregee/covidtracker-graphql/edit/master/readme.md)
