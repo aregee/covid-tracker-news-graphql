@@ -47,6 +47,81 @@ export type NewsArticleDateArgs = {
   format?: Maybe<Scalars['String']>;
 };
 
+export type StateData = {
+  __typename?: 'StateData';
+  active:  Maybe<Scalars['String']>;
+  confirmed:  Maybe<Scalars['String']>;
+  deaths:  Maybe<Scalars['String']>;
+  deltaconfirmed:  Maybe<Scalars['String']>;
+  deltadeaths:  Maybe<Scalars['String']>;
+  deltarecovered:  Maybe<Scalars['String']>;
+  lastupdatedtime:  Maybe<Scalars['String']>;
+  recovered:  Maybe<Scalars['String']>;
+  state:  Maybe<Scalars['String']>;
+  statecode:  Maybe<Scalars['String']>;
+  statenotes:  Maybe<Scalars['String']>;
+}
+
+export type TestReport = {
+  __typename?: 'StateData';
+  positivecasesfromsamplesreported: Maybe<Scalars['String']>;
+  samplereportedtoday: Maybe<Scalars['String']>;
+  source: Maybe<Scalars['String']>;
+  testsconductedbyprivatelabs: Maybe<Scalars['String']>;
+  totalindividualstested: Maybe<Scalars['String']>;
+  totalpositivecases: Maybe<Scalars['String']>;
+  totalsamplestested: Maybe<Scalars['String']>;
+  updatetimestamp: Maybe<Scalars['String']>;
+}
+
+export type India = {
+  __typename?: 'Inida';
+  statewise?: Maybe<Array<Maybe<StateData>>>;
+  tested?: Maybe<Array<Maybe<TestReport>>>
+}
+
+export type District = {
+  __typename?: 'District';
+  district: Maybe<Scalars['String']>
+  confirmed: Maybe<Scalars['Int']>
+  lastupdatedtime: Maybe<Scalars['String']>
+}
+
+export type IndiaState = {
+  state?: Maybe<Scalars['String']>
+  districtData?: Maybe<Array<Maybe<District>>>;
+}
+
+export type TestData = {
+  __typename?: 'TestData';
+  negative: Maybe<Scalars['String']>
+  numcallsstatehelpline: Maybe<Scalars['String']>
+  numicubeds: Maybe<Scalars['String']>
+  numisolationbeds: Maybe<Scalars['String']>
+  numventilators: Maybe<Scalars['String']>
+  positive: Maybe<Scalars['String']>
+  positiveratebytests: Maybe<Scalars['String']>
+  source: Maybe<Scalars['String']>
+  source2: Maybe<Scalars['String']>
+  state: Maybe<Scalars['String']>
+  testsperthousand: Maybe<Scalars['String']>
+  totalpeopleinquarantine: Maybe<Scalars['String']>
+  totalpeoplereleasedfromquarantine: Maybe<Scalars['String']>
+  totaltested: Maybe<Scalars['String']>
+  unconfirmed: Maybe<Scalars['String']>
+  updatedon: Maybe<Scalars['String']>
+}
+
+export type QueryIndiaArgs = {
+};
+
+export type QueryIndiaStateArgs = {
+  stateName: Maybe<Scalars['String']>
+};
+
+export type QueryTestsArgs = {
+};
+
 export type Query = {
    __typename?: 'Query';
   results?: Maybe<Array<Maybe<Result>>>;
@@ -60,6 +135,9 @@ export type Query = {
   referedlink?: Maybe<Array<Maybe<ReferedLink>>>;
   helpline?: Maybe<Array<Maybe<HelplineNumber>>>;
   labs?: Maybe<Array<Maybe<TestSite>>>;
+  india?: Maybe<India>;
+  districts?: Maybe<Array<Maybe<IndiaState>>>
+  tests?: Maybe<Array<Maybe<TestData>>>
 };
 
 
@@ -263,6 +341,13 @@ export type ResolversTypes = {
   HelplineNumber: ResolverTypeWrapper<HelplineNumber>,
   TestSite: ResolverTypeWrapper<TestSite>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  India: ResolverTypeWrapper<India>,
+  StateData: ResolverTypeWrapper<StateData>,
+  IndiaState: ResolverTypeWrapper<IndiaState>,
+  District: ResolverTypeWrapper<District>,
+  Districts: ResolverTypeWrapper<Maybe<Array<Maybe<IndiaState>>>>,
+  TestData: ResolverTypeWrapper<TestData>,
+  Tests: ResolverTypeWrapper<Maybe<Array<Maybe<TestData>>>>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -281,6 +366,11 @@ export type ResolversParentTypes = {
   HelplineNumber: HelplineNumber,
   TestSite: TestSite,
   Boolean: Scalars['Boolean'],
+  India: India,
+  IndiaState: IndiaState,
+  Districts: Maybe<Array<Maybe<IndiaState>>>
+  TestData: TestData,
+  Tests: Maybe<Array<Maybe<TestData>>>
 };
 
 export type CountryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Country'] = ResolversParentTypes['Country']> = {
@@ -321,6 +411,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   referedlink?: Resolver<Maybe<Array<Maybe<ResolversTypes['ReferedLink']>>>, ParentType, ContextType, RequireFields<QueryReferedlinkArgs, 'country'>>,
   helpline?: Resolver<Maybe<Array<Maybe<ResolversTypes['HelplineNumber']>>>, ParentType, ContextType, RequireFields<QueryHelplineArgs, 'country'>>,
   labs?: Resolver<Maybe<Array<Maybe<ResolversTypes['TestSite']>>>, ParentType, ContextType, RequireFields<QueryLabsArgs, 'country'>>,
+  india?: Resolver<Maybe<ResolversTypes['India']>, ParentType, ContextType, RequireFields<QueryIndiaArgs, never>>,
+  districts?: Resolver<Maybe<ResolversTypes['District']>, ParentType, ContextType, RequireFields<QueryIndiaStateArgs, never>>,
+  tests?: Resolver<Maybe<ResolversTypes['Tests']>, ParentType, ContextType, RequireFields<QueryTestsArgs, never>>,
+  district?: Resolver<Maybe<ResolversTypes['IndiaState']>, ParentType, ContextType, RequireFields<QueryIndiaStateArgs, never>>,
 };
 
 export type ReferedLinkResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReferedLink'] = ResolversParentTypes['ReferedLink']> = {
@@ -363,6 +457,21 @@ export type TestSiteResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
+export type IndiaResolvers<ContextType = any, ParentType extends ResolversParentTypes['India'] = ResolversParentTypes['India']> = {
+  statewise?: Resolver<Maybe<ResolversTypes['StateData']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export type IndiaStateResolvers<ContextType = any, ParentType extends ResolversParentTypes['IndiaState'] = ResolversParentTypes['IndiaState']> = {
+  statewise?: Resolver<Maybe<ResolversTypes['IndiaState']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export type TestsResolver<ContextType = any, ParentType extends ResolversParentTypes['Tests'] = ResolversParentTypes['Tests']> = {
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+
 export type Resolvers<ContextType = any> = {
   Country?: CountryResolvers<ContextType>,
   HelplineNumber?: HelplineNumberResolvers<ContextType>,
@@ -373,6 +482,9 @@ export type Resolvers<ContextType = any> = {
   State?: StateResolvers<ContextType>,
   Summary?: SummaryResolvers<ContextType>,
   TestSite?: TestSiteResolvers<ContextType>,
+  India?: IndiaResolvers<ContextType>,
+  IndiaState?: IndiaStateResolvers<ContextType>,
+  Tests?: TestsResolver<ContextType>
 };
 
 

@@ -70,6 +70,66 @@ input DateInput {
   lt: String
 }
 
+type India {
+  statewise: [StateData]
+  tested: [TestReport]
+}
+
+type StateData {
+  active: String
+  confirmed: String
+  deaths: String
+  deltaconfirmed: String
+  deltadeaths: String
+  deltarecovered: String
+  lastupdatedtime: String
+  recovered: String
+  state: String
+  statecode: String
+  statenotes: String
+}
+
+type TestReport {
+  positivecasesfromsamplesreported: String
+  samplereportedtoday: String
+  source: String
+  testsconductedbyprivatelabs: String
+  totalindividualstested: String
+  totalpositivecases: String
+  totalsamplestested: String
+  updatetimestamp: String
+}
+
+type TestData {
+  negative: String
+  numcallsstatehelpline: String
+  numicubeds: String
+  numisolationbeds: String
+  numventilators: String
+  positive: String
+  positiveratebytests: String
+  source: String
+  source2: String
+  state: String
+  testsperthousand: String
+  totalpeopleinquarantine: String
+  totalpeoplereleasedfromquarantine: String
+  totaltested: String
+  unconfirmed: String
+  updatedon: String
+}
+
+type District {
+  district: String
+  confirmed: Int
+  lastupdatedtime: String
+}
+
+type IndiaState {
+  state: String
+  districtData: [District]
+}
+
 type Query {
   results(countries: [String], date: DateInput): [Result]
   result (country: String!, date: String): Result
@@ -89,6 +149,13 @@ type Query {
   helpline (country: String!, state: String): [HelplineNumber]
 
   labs (country: String!, state: String): [TestSite]
+
+  india: India
+
+  districts: [IndiaState]
+  district(stateName: String!): IndiaState
+
+  tests: [TestData]
 }
 `
 

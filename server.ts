@@ -26,6 +26,9 @@ let helplines = null;
 let labs = null;
 let worldNews = null;
 let countryNews = {};
+let indiaData = null;
+let districts = null;
+let tests = null;
 
 let fetchReferedLinks = () => {
   return Promise.resolve(linksList)
@@ -109,6 +112,33 @@ const server = new ApolloServer({
       labs = (res)
       return labs
     }
+
+    const getIndiaData = async () => {
+      if (indiaData) {
+        return indiaData
+      }
+      const res = await fetch('https://api.covid19india.org/data.json')
+      indiaData = await res.json()
+      return indiaData;
+    }
+
+    const getStateWiseDistricts = async () => {
+      if (districts) {
+        return districts
+      }
+      const res = await fetch('https://api.covid19india.org/v2/state_district_wise.json')
+      districts = await res.json()
+      return districts;
+    }
+
+    const getStateWiseTests = async () => {
+      if (tests) {
+        return tests.states_tested_data;
+      }
+      const res = await fetch('https://api.covid19india.org/state_test_data.json')
+      tests = await res.json();
+      return tests.states_tested_data;
+    }
     
     return {
       getResults,
@@ -118,10 +148,13 @@ const server = new ApolloServer({
       getLabs,
       getNewsWorld,
       getNewsIndia,
+      getIndiaData,
+      getStateWiseDistricts,
+      getStateWiseTests
     }
   },
-
 })
+
 
 const cors = microCors()
 

@@ -272,6 +272,34 @@ const resolvers: QueryResolvers = {
     const mostRecent = mapState(stateResults);
     const state = { name: name, mostRecent: {...mostRecent, growthRate: getGrowthRateNdtv(mostRecent)}}
     return state;
+  },
+
+  async india(_parent, {}, {getIndiaData}) {
+    const data = await getIndiaData();
+    const stateWiseData = {
+      statewise: data.statewise,
+      tested: data.tested
+    };
+    return stateWiseData;
+  },
+
+  async districts(_parent, {}, {getStateWiseDistricts}) {
+    const data = await getStateWiseDistricts();
+    return data;
+  },
+
+  async district(_parent, {stateName}, {getStateWiseDistricts}) {
+    const data = await getStateWiseDistricts();
+    let selectedState = data.find(arr => arr.state === stateName);
+    if (!selectedState) {
+      throw new ApolloError(`Couldn't find data for ${stateName}`)
+    }
+    return selectedState;
+  },
+
+  async tests(_parent, {}, {getStateWiseTests}) {
+    const data = await getStateWiseTests();
+    return data;
   }
 
 }
