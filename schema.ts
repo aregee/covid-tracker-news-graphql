@@ -122,7 +122,10 @@ type TestData {
 type District {
   district: String
   confirmed: Int
+  active: Int
+  deceased: Int
   lastupdatedtime: String
+  recovered: Int
 }
 
 type IndiaState {

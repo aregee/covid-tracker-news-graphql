@@ -85,6 +85,9 @@ export type District = {
   district: Maybe<Scalars['String']>
   confirmed: Maybe<Scalars['Int']>
   lastupdatedtime: Maybe<Scalars['String']>
+  active: Maybe<Scalars['Int']>
+  deceased: Maybe<Scalars['Int']>
+  recovered: Maybe<Scalars['Int']>
 }
 
 export type IndiaState = {
