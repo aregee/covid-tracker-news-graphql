@@ -278,7 +278,8 @@ const resolvers: QueryResolvers = {
     const data = await getIndiaData();
     const stateWiseData = {
       statewise: data.statewise,
-      tested: data.tested
+      tested: data.tested,
+      casesTimeSeries: data.cases_time_series
     };
     return stateWiseData;
   },

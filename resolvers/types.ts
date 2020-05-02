@@ -74,10 +74,22 @@ export type TestReport = {
   updatetimestamp: Maybe<Scalars['String']>;
 }
 
+export type caseTimeData = {
+  __typename?: 'caseTimeData';
+  dailyconfirmed: Maybe<Scalars['String']>;
+  dailydeceased: Maybe<Scalars['String']>;
+  dailyrecovered: Maybe<Scalars['String']>;
+  date: Maybe<Scalars['String']>;
+  totalconfirmed: Maybe<Scalars['String']>;
+  totaldeceased: Maybe<Scalars['String']>;
+  totalrecovered: Maybe<Scalars['String']>;
+}
+
 export type India = {
   __typename?: 'Inida';
   statewise?: Maybe<Array<Maybe<StateData>>>;
-  tested?: Maybe<Array<Maybe<TestReport>>>
+  tested?: Maybe<Array<Maybe<TestReport>>>;
+  casesTimeSeries?: Maybe<Array<Maybe<caseTimeData>>>;
 }
 
 export type District = {
@@ -351,6 +363,7 @@ export type ResolversTypes = {
   Districts: ResolverTypeWrapper<Maybe<Array<Maybe<IndiaState>>>>,
   TestData: ResolverTypeWrapper<TestData>,
   Tests: ResolverTypeWrapper<Maybe<Array<Maybe<TestData>>>>,
+  caseTimeData: ResolverTypeWrapper<caseTimeData>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -462,6 +475,7 @@ export type TestSiteResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type IndiaResolvers<ContextType = any, ParentType extends ResolversParentTypes['India'] = ResolversParentTypes['India']> = {
   statewise?: Resolver<Maybe<ResolversTypes['StateData']>, ParentType, ContextType>,
+  casesTimeSeries?: Resolver<Maybe<ResolversTypes['caseTimeData']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
