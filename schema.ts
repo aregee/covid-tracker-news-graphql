@@ -72,7 +72,18 @@ input DateInput {
 
 type India {
   statewise: [StateData]
-  tested: [TestReport]
+  tested: [TestReport],
+  casesTimeSeries: [caseTimeData]
+}
+
+type caseTimeData {
+  dailyconfirmed: String
+  dailydeceased: String
+  dailyrecovered: String
+  date: String
+  totalconfirmed: String
+  totaldeceased: String
+  totalrecovered: String
 }
 
 type StateData {
@@ -122,7 +133,10 @@ type TestData {
 type District {
   district: String
   confirmed: Int
+  active: Int
+  deceased: Int
   lastupdatedtime: String
+  recovered: Int
 }
 
 type IndiaState {
