@@ -42,7 +42,7 @@ query {
 ```
 
 ## Projects using this API
-
+[Corona India Live](https://github.com/sandeshchoudhary/covid)
 [Add yours +](https://github.com/aregee/covidtracker-graphql/edit/master/readme.md)
 
 ## License
